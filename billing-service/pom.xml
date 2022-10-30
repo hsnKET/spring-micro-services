@@ -122,6 +122,8 @@
                 </configuration>
             </plugin>
         </plugins>
+
+        <finalName>billing-service</finalName>
     </build>
 
 </project>

@@ -115,8 +115,8 @@
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>
-
         </plugins>
+        <finalName>customer-service</finalName>
     </build>
 
 </project>
