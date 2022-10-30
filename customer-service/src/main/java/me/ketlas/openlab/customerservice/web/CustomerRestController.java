@@ -36,6 +36,7 @@ public class CustomerRestController {
 
     @PutMapping("/customers/{id}")
     CustomerResponseDTO update(@PathVariable String id, @RequestBody CustomerRequestDTO customerRequestDTO){
+        customerRequestDTO.setId(id);
         return customerService.update(customerRequestDTO);
     }
 
