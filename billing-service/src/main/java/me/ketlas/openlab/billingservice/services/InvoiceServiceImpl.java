@@ -3,6 +3,7 @@ package me.ketlas.openlab.billingservice.services;
 import me.ketlas.openlab.billingservice.dto.InvoiceRequestDTO;
 import me.ketlas.openlab.billingservice.dto.InvoiceResponseDTO;
 import me.ketlas.openlab.billingservice.entitties.Invoice;
+import me.ketlas.openlab.billingservice.exceptions.CustomerNotFoundException;
 import me.ketlas.openlab.billingservice.mappers.InvoiceMapper;
 import me.ketlas.openlab.billingservice.model.Customer;
 import me.ketlas.openlab.billingservice.openfeign.CustomerServiceRestClient;
@@ -32,10 +33,17 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Override
     public InvoiceResponseDTO save(InvoiceRequestDTO invoiceRequestDTO) {
+        Customer customer = null;
+        try{
+            customer = customerServiceRestClient.getCustomer(invoiceRequestDTO.getCustomerID());
+        }catch (Exception e){
+            throw new CustomerNotFoundException(invoiceRequestDTO.getCustomerID());
+        }
         Invoice invoice = invoiceMapper.fromInvoiceRequestDTO(invoiceRequestDTO);
         invoice.setId(UUID.randomUUID().toString());
         invoice.setDate(new Date());
         Invoice savedInvoice = invoiceRepository.save(invoice);
+        savedInvoice.setCustomer(customer);
         return invoiceMapper.fromInvoice(savedInvoice);
     }
 
@@ -51,6 +59,10 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Override
     public List<InvoiceResponseDTO> invoiceByCustomer(String customerId) {
         List<Invoice> invoices = invoiceRepository.findByCustomerID(customerId);
+        for (Invoice inv:invoices) {
+            Customer customer = customerServiceRestClient.getCustomer(inv.getCustomerID());
+            inv.setCustomer(customer);
+        }
         List<InvoiceResponseDTO> invoiceResponseDTOS = invoices.stream()
                 .map(invoice -> invoiceMapper.fromInvoice(invoice))
                 .collect(Collectors.toList());
@@ -60,8 +72,13 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Override
     public List<InvoiceResponseDTO> allInvoices() {
         List<Invoice> invoices = invoiceRepository.findAll();
+        for (Invoice inv:invoices) {
+            Customer customer = customerServiceRestClient.getCustomer(inv.getCustomerID());
+            inv.setCustomer(customer);
+        }
         return invoices.stream()
                 .map(invoice -> invoiceMapper.fromInvoice(invoice))
                 .collect(Collectors.toList());
     }
+
 }

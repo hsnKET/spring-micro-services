@@ -3,6 +3,8 @@ package me.ketlas.openlab.billingservice.web;
 import me.ketlas.openlab.billingservice.dto.InvoiceRequestDTO;
 import me.ketlas.openlab.billingservice.dto.InvoiceResponseDTO;
 import me.ketlas.openlab.billingservice.services.InvoiceService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,6 +38,11 @@ public class InvoiceRestController {
     @GetMapping("/invoices/customers/{customerId}")
     List<InvoiceResponseDTO> invoicesByCustomer(@PathVariable String customerId){
         return invoiceService.invoiceByCustomer(customerId);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> exceptionHandler(Exception e){
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 }
