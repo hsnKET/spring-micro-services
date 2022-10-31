@@ -6,7 +6,7 @@
 
 ## <b>INTRODUCTION</b>
 
-In this project we will see how to create how to create a simple application based on the microservice architecture. So the application will be divided on 2 microservices (or 3 soon), so the first microservice for managing customers and second for managing bills (and third for products soon).
+In this project we will see how to create a simple application based on the microservice architecture. So the application will be divided on 2 microservices (or 3 soon), so the first microservice for managing customers and second for managing bills (and third for products soon).
 
 ## <b>CUSTOMER SERVICE</b>
 
